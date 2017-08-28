@@ -1,5 +1,6 @@
 package com.yung_coder.oluwole.akeko
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.net.Uri
@@ -50,6 +51,9 @@ class Play : AppCompatActivity() {
                 var actionBar = actionBar
                 actionBar.hide()
             }
+        } else if (id == R.id.action_about) {
+            val intent = Intent(this, About::class.java)
+            startActivity(intent)
         }
         return super.onOptionsItemSelected(item)
     }

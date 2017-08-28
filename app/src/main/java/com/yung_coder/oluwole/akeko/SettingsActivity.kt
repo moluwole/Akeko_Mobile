@@ -36,7 +36,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         val prefManager = preferenceManager.sharedPreferences
 
         val checkAlarm: CheckBoxPreference = preferenceManager.findPreference(alarm) as CheckBoxPreference
-        checkAlarm.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p0, p1 ->
+        checkAlarm.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, p1 ->
             //            deleteAlarm()
             if (p1 is Boolean) {
                 if (p1 == true) {
@@ -50,7 +50,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         }
 
         val valAlarm: ListPreference = preferenceManager.findPreference(alarm_value) as ListPreference
-        valAlarm.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p0, p1 ->
+        valAlarm.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, p1 ->
             if (p1 is String) {
                 val interval = p1
                 setAlarm(interval)

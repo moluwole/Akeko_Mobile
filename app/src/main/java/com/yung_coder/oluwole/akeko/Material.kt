@@ -87,7 +87,10 @@ class Material : AppCompatActivity() {
         val id = item.itemId
 
         if (id == R.id.action_settings) {
-            var intent = Intent(this, SettingsActivity::class.java)
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        } else if (id == R.id.action_about) {
+            val intent = Intent(this, About::class.java)
             startActivity(intent)
         }
         return super.onOptionsItemSelected(item)

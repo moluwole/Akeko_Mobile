@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.yung_coder.oluwole.akeko.TouchImageView
+    <com.yung_coder.oluwole.akeko.curl.TouchImageView
         android:id="@+id/read_imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -22,6 +22,7 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.yung_coder.oluwole.akeko.curl.PageCurl
+import com.yung_coder.oluwole.akeko.curl.TouchImageView
 import java.io.File
 import java.io.IOException
 
@@ -198,6 +199,9 @@ class Read : AppCompatActivity() {
             } else {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
+        } else if (id == R.id.action_about) {
+            val intent = Intent(this, About::class.java)
+            startActivity(intent)
         }
         return super.onOptionsItemSelected(item)
     }

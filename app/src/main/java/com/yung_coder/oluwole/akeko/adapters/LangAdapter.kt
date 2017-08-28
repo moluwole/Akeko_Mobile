@@ -3,14 +3,17 @@ package com.yung_coder.oluwole.akeko.adapters
 import android.content.Context
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
+import com.google.firebase.database.*
 import com.yung_coder.oluwole.akeko.Material
 import com.yung_coder.oluwole.akeko.Menu
 import com.yung_coder.oluwole.akeko.R
@@ -44,36 +47,32 @@ class LangAdapter constructor(mList: ArrayList<Models.lang>?) : RecyclerView.Ada
 
         holder?.lang_item?.setOnClickListener {
 
-            var intent = Intent(app_context as Menu, Material::class.java)
-            intent.putExtra("lang_name", lang_data?.name)
-            app_context?.startActivity(intent)
+            var bookList: ArrayList<Models.book>? = ArrayList()
+            var database: FirebaseDatabase = FirebaseDatabase.getInstance()
+            var myRef: DatabaseReference = database.getReference(lang_data?.name)
 
-//            var myList: ArrayList<Models.book>? = ArrayList()
-//            var database: FirebaseDatabase = FirebaseDatabase.getInstance()
-//            var myRef: DatabaseReference = database.getReference(lang_data?.name)
-//
-//            myRef.addValueEventListener(object : ValueEventListener {
-//                override fun onCancelled(p0: DatabaseError?) {
-//                    Toast.makeText(app_context, "An unexpected error occurred", Toast.LENGTH_LONG).show()
-//                    Log.e("Error", p0.toString())            }
-//
-//                override fun onDataChange(p0: DataSnapshot?) {
-//                    myList?.clear()
-//                    p0?.children?.forEach{noteSnapshot ->
-//                        val note= noteSnapshot.getValue(Models.book::class.java)
-//                        if(note?.type == "books"){
-//                            myList?.add(note)
-//                        }
-//                    }
-//
-//                    if(myList?.count()!! > 0) {
-//
-//                    }
-//                    else{
-//                        Toast.makeText(app_context, "No Materials Available Yet", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
+            myRef.addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError?) {
+                    Toast.makeText(app_context, "An unexpected error occurred", Toast.LENGTH_LONG).show()
+                    Log.e("Error", p0.toString())
+                }
+
+                override fun onDataChange(p0: DataSnapshot?) {
+                    bookList?.clear()
+                    p0?.children?.forEach { noteSnapshot ->
+                        val note = noteSnapshot.getValue(Models.book::class.java)
+                        bookList?.add(note!!)
+                    }
+
+                    if (bookList?.count()!! > 0) {
+                        var intent = Intent(app_context as Menu, Material::class.java)
+                        intent.putExtra("lang_name", lang_data?.name)
+                        app_context?.startActivity(intent)
+                    } else {
+                        Toast.makeText(app_context, "No Materials for ${lang_data?.name} Available Yet", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
         }
     }
 

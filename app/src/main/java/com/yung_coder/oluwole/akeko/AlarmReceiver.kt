@@ -1,6 +1,5 @@
 package com.yung_coder.oluwole.akeko
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaPlayer
@@ -37,10 +36,10 @@ class AlarmReceiver : AppCompatActivity() {
             finish()
         }
 
-        playSound(this, getUri())
+        playSound(getUri())
     }
 
-    private fun playSound(context: Context, alert: Uri?) {
+    private fun playSound(alert: Uri?) {
         try {
             ringtone = RingtoneManager.getRingtone(applicationContext, alert)
             ringtone?.play()
