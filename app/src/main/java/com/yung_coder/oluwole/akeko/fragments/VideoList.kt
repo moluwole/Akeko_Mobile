@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +53,6 @@ class VideoList : Fragment() {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {
                 Toast.makeText(rootView.context, "An unexpected error occurred", Toast.LENGTH_LONG).show()
-                Log.e("Error", p0.toString())
             }
 
             override fun onDataChange(p0: DataSnapshot?) {

@@ -15,7 +15,6 @@ import android.os.ParcelFileDescriptor
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.*
 import android.view.Menu
 import android.widget.RelativeLayout
@@ -41,8 +40,6 @@ class Read : AppCompatActivity() {
     class PageCurlPageTransformer : ViewPager.PageTransformer {
 
         override fun transformPage(page: View, position: Float) {
-
-//            Log.d("Animation test", "transformPage, position = " + position + ", page = " + page.getTag(R.id.pager))
             if (page is PageCurl) {
                 if (position > -1.0f && position < 1.0f) {
                     // hold the page steady and let the views do the work
@@ -108,7 +105,6 @@ class Read : AppCompatActivity() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         renderer = PdfRenderer(mFileDescriptor)
                         page = renderer!!.pageCount
-                        Log.e("PAGE COUNT", page.toString())
                     } else {
                         var intent = Intent(Intent.ACTION_VIEW)
                         intent.setDataAndType(Uri.fromFile(file), "application/pdf")

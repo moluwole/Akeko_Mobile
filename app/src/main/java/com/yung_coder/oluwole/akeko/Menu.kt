@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.widget.Toast
 import com.google.firebase.database.*
 import com.yung_coder.oluwole.akeko.adapters.LangAdapter
@@ -28,7 +27,6 @@ class Menu : AppCompatActivity() {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {
                 Toast.makeText(applicationContext, "An unexpected error occurred", Toast.LENGTH_LONG).show()
-                Log.e("Error", p0.toString())
             }
 
             override fun onDataChange(p0: DataSnapshot?) {

@@ -3,7 +3,6 @@ package com.yung_coder.oluwole.akeko.adapters
 import android.content.Context
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +53,6 @@ class LangAdapter constructor(mList: ArrayList<Models.lang>?) : RecyclerView.Ada
             myRef.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {
                     Toast.makeText(app_context, "An unexpected error occurred", Toast.LENGTH_LONG).show()
-                    Log.e("Error", p0.toString())
                 }
 
                 override fun onDataChange(p0: DataSnapshot?) {

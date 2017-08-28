@@ -91,7 +91,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             "Twice a day" -> return_val = 12 * 60 * 60
             "Thrice a day" -> return_val = 8 * 60 * 60
         }
-//        Log.e("Return Val", "${AlarmManager.INTERVAL_HALF_DAY} Default Value $return_val")
         return return_val
     }
 

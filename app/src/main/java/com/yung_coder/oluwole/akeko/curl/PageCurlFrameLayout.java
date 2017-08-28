@@ -81,8 +81,6 @@ public class PageCurlFrameLayout extends RelativeLayout implements PageCurl {
     @Override
     public void setCurlFactor(float curl) {
 
-//        Log.d(TAG, "setCurlFactor, curl = " + curl + ", page = " + getTag(R.id.pager));
-
       /*
        * From 1.0 to 0.0, clip reveals page from corner to full, as though beneath the folding page that precedes
        * From 0.0 to -1.0 clip hides corner of page and shows page folding over
