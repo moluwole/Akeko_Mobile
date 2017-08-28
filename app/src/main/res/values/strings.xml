@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Akekọ</string>
+
+    <string name="title_activity_materials">Materials</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_material">Material</string>
+    <string name="tab_text_1">Books</string>
+    <string name="tab_text_2">Videos</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="item_description">Item Description</string>
+
+    <string name="permission_denied">Permission Denied</string>
+    <string name="permission_granted">Permission Granted</string>
+
+    <string name="change_orientation">Change Orientation to %1$s</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string-array name="alarm_frequency">
+        <item>Every 6 hours</item>
+        <item>Every Day</item>
+        <item>Twice a day</item>
+        <item>Thrice a day</item>
+    </string-array>
+
+</resources>

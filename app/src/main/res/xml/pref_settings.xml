@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="alarm_settings"
+        android:title="Alarm Settings">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="show_alarm"
+            android:summary="Enable or Disable Alarm"
+            android:title="Enable Alarm" />
+        <ListPreference
+            android:defaultValue="Every Day"
+            android:dependency="show_alarm"
+            android:entries="@array/alarm_frequency"
+            android:entryValues="@array/alarm_frequency"
+            android:key="alarm_interval"
+            android:summary="Define how often you want to be alerted"
+            android:title="Alarm Interval" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="tone_settings"
+        android:title="Alarm Tone Settings">
+        <RingtonePreference
+            android:defaultValue="true"
+            android:enabled="true"
+            android:key="alarm_sound"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:title="Notification Sound" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
