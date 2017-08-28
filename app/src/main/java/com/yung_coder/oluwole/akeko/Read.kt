@@ -8,15 +8,13 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Environment
-import android.os.ParcelFileDescriptor
+import android.os.*
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.view.Menu
+import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.Toast
 import com.squareup.picasso.Picasso
@@ -24,6 +22,7 @@ import com.yung_coder.oluwole.akeko.curl.PageCurl
 import com.yung_coder.oluwole.akeko.curl.TouchImageView
 import java.io.File
 import java.io.IOException
+import java.util.*
 
 
 class Read : AppCompatActivity() {
@@ -82,8 +81,34 @@ class Read : AppCompatActivity() {
         var mViewPager: ViewPager = findViewById(R.id.read_pager)
         mViewPager.adapter = mCustomPagerAdapter
         mViewPager.setPageTransformer(false, PageCurlPageTransformer())
+
+
+        progressBar = findViewById(R.id.progressBar2)
+
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = System.currentTimeMillis()
+        cal.set(Calendar.HOUR, 2)
+        cal.set(Calendar.MINUTE, 0)
+
+
+        val hrs = cal.timeInMillis
+        val myCountDownTimer = MyCountDownTimer(hrs, 1000)
+        myCountDownTimer.start()
     }
 
+    var progressBar: ProgressBar? = null
+
+    inner class MyCountDownTimer(millisInFuture: Long, countDownInterval: Long) : CountDownTimer(millisInFuture, countDownInterval) {
+
+        override fun onTick(millisUntilFinished: Long) {
+            val progress = (millisUntilFinished / 1000).toInt()
+            progressBar?.progress = progressBar?.max!! - progress
+        }
+
+        override fun onFinish() {
+            finish()
+        }
+    }
 
     class CustomPagerAdapter(context: Context?, file: File?) : PagerAdapter() {
 
