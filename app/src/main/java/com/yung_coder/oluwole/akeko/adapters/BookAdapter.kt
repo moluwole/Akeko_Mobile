@@ -66,6 +66,7 @@ class BookAdapter constructor(mList: ArrayList<Models.book>?, context: Context, 
 
         holder?.book_name?.setOnClickListener {
             var intent: Intent = Intent(context, Read::class.java)
+            intent.putExtra("lang_name", lang_name)
             intent.putExtra("book_name", book_details?.title)
             intent.putExtra("page_num", book_details?.page_num)
             context?.startActivity(intent)

@@ -1,5 +1,6 @@
 package com.yung_coder.oluwole.akeko
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -60,11 +61,14 @@ class Read : AppCompatActivity() {
 
         invalidateOptionsMenu()
 
+//        showProgress(true)
+
         var intent = intent
         name = intent.getStringExtra("book_name")
+        val lang_name = intent.getStringExtra("lang_name")
 
         val storageDir = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Akekoo/Books")
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Akekoo/Books/" + lang_name)
         if (!storageDir.exists()) storageDir.mkdirs()
         val filename = name + ".pdf"
         val file = File(storageDir.toString() + "/" + filename)
@@ -77,7 +81,7 @@ class Read : AppCompatActivity() {
             exists = true
         }
 
-        var mCustomPagerAdapter = CustomPagerAdapter(this, file)
+        var mCustomPagerAdapter = CustomPagerAdapter(this, file, exists)
         var mViewPager: ViewPager = findViewById(R.id.read_pager)
         mViewPager.adapter = mCustomPagerAdapter
         mViewPager.setPageTransformer(false, PageCurlPageTransformer())
@@ -110,11 +114,15 @@ class Read : AppCompatActivity() {
         }
     }
 
-    class CustomPagerAdapter(context: Context?, file: File?) : PagerAdapter() {
+    class CustomPagerAdapter(context: Context?, file: File?, fileExist: Boolean?) : PagerAdapter() {
+
+
 
         var context: Context? = null
         var mLayoutInflater: LayoutInflater? = null
         var file: File? = null
+        var fileExist: Boolean? = null
+
         private var mFileDescriptor: ParcelFileDescriptor? = null
 
         private var renderer: PdfRenderer? = null
@@ -122,9 +130,11 @@ class Read : AppCompatActivity() {
 
         init {
             this.context = context
+            this.fileExist = fileExist
             mLayoutInflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
             try {
-                if (exists) {
+
+                if (fileExist == true && fileExist != null) {
                     this.file = file
                     mFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -150,6 +160,7 @@ class Read : AppCompatActivity() {
             }
         }
 
+
         override fun isViewFromObject(view: View?, obj: Any?): Boolean {
             return view == obj as RelativeLayout
         }
@@ -158,7 +169,13 @@ class Read : AppCompatActivity() {
             var itemView = mLayoutInflater?.inflate(R.layout.pager_item, container, false) as View
             var imageView: TouchImageView? = itemView.findViewById(R.id.read_imageView)
 
-            if (exists) {
+            var progressDialog = ProgressDialog(context)
+            progressDialog.isIndeterminate = true
+            progressDialog.setMessage("Loading...")
+
+            progressDialog.show()
+
+            if (fileExist == true) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val pdf_page = renderer?.openPage(position)
                     val REQ_WIDTH = pdf_page?.width
@@ -171,9 +188,11 @@ class Read : AppCompatActivity() {
                     pdf_page.render(bitmap, rect, matrix, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
                     imageView?.imageMatrix = matrix
                     imageView?.setImageBitmap(bitmap)
+                    progressDialog.dismiss()
                     pdf_page.close()
                 }
             } else {
+                progressDialog.dismiss()
                 Picasso.with(context)
                         .load(arrayList[position])
                         .into(imageView, object : com.squareup.picasso.Callback {
@@ -182,7 +201,8 @@ class Read : AppCompatActivity() {
                             }
 
                             override fun onError() {
-                                Toast.makeText(context, "An error occured. Try again", Toast.LENGTH_SHORT).show()
+                                imageView?.setImageResource(R.drawable.error)
+                                Toast.makeText(context, "An error occured. Try again or connect to internet", Toast.LENGTH_SHORT).show()
                             }
                         })
             }

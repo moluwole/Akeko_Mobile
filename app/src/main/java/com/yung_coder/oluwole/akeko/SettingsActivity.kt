@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.preference.*
+import android.view.MenuItem
 import android.widget.Toast
 import java.util.*
 
@@ -101,5 +102,15 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addPreferencesFromResource(R.xml.pref_settings)
         PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

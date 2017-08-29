@@ -21,6 +21,7 @@
     <string name="developer_alias">%1$sYung Coder</string>
     <string name="github_text">Available on Github</string>
     <string name="app_desc">%1$sMajiyagbe Oluwole</string>
+    <string name="loading">Loading</string>
 
     <string-array name="alarm_frequency">
         <item>Every 6 hours</item>

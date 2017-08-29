@@ -27,7 +27,14 @@
             android:ringtoneType="notification"
             android:showDefault="true"
             android:showSilent="true"
-            android:title="Notification Sound" />
+            android:title="Alarm Sound" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Notifications">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notify_switch"
+            android:summary="Get notified when new books and videos are updated"
+            android:title="Turn on Notifications" />
     </PreferenceCategory>
 
 </PreferenceScreen>
