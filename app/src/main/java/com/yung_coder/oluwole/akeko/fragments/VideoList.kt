@@ -76,15 +76,15 @@ class VideoList : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val rootView = inflater!!.inflate(R.layout.fragment_video, container, false)
+        val rootView = inflater?.inflate(R.layout.fragment_video, container, false)
 
         recycler_view = rootView?.findViewById<RecyclerView>(R.id.video_list_view)
         loading_panel = rootView?.findViewById(R.id.video_loading_panel)
         recycler_view?.adapter = null
 
-        val mLayoutManager = LinearLayoutManager(rootView.context)
+        val mLayoutManager = LinearLayoutManager(rootView?.context)
         recycler_view?.layoutManager = mLayoutManager
-        val dividerItemDecoration = DividerItemDecoration(rootView.context, mLayoutManager.orientation)
+        val dividerItemDecoration = DividerItemDecoration(rootView?.context, mLayoutManager.orientation)
         recycler_view?.addItemDecoration(dividerItemDecoration)
 
         showProgress(true)
@@ -95,7 +95,7 @@ class VideoList : Fragment() {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {
                 showProgress(false)
-                Toast.makeText(rootView.context, "An unexpected error occurred", Toast.LENGTH_LONG).show()
+                Toast.makeText(rootView?.context, "There seems to be a Network Connectivity Issue as a connection could not be established to the Akekọ Server", Toast.LENGTH_LONG).show()
             }
 
             override fun onDataChange(p0: DataSnapshot?) {
@@ -109,14 +109,19 @@ class VideoList : Fragment() {
                 }
 
                 showProgress(false)
-                if (mList?.count()!! > 0) {
-                    val mLayoutManager = LinearLayoutManager(rootView.context)
-                    recycler_view?.layoutManager = mLayoutManager
+                val count = mList?.count()
+                if (count != null) {
+                    if (count > 0) {
+                        val mLayoutManager = LinearLayoutManager(rootView?.context)
+                        recycler_view?.layoutManager = mLayoutManager
 
-                    val mAdapter = VideoAdapter(mList, rootView.context, lang_name!!)
-                    recycler_view?.adapter = mAdapter
+                        val mAdapter = lang_name?.let { rootView?.context?.let { it1 -> VideoAdapter(mList, it1, it) } }
+                        recycler_view?.adapter = mAdapter
+                    } else {
+                        Toast.makeText(rootView?.context, "No Video Material for $lang_name available yet", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    Toast.makeText(rootView.context, "No Video Material for $lang_name available yet", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(rootView?.context, "No Video Material for $lang_name available yet", Toast.LENGTH_SHORT).show()
                 }
             }
         })

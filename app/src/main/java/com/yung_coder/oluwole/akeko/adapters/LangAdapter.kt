@@ -25,7 +25,7 @@ import com.yung_coder.oluwole.akeko.models.Models
 class LangAdapter constructor(mList: ArrayList<Models.lang>?) : RecyclerView.Adapter<LangAdapter.LangViewAdapter>() {
 
     var mList: ArrayList<Models.lang>? = null
-    var generator = ColorGenerator.MATERIAL
+    var generator: ColorGenerator? = ColorGenerator.MATERIAL
     var app_context: Context? = null
 
     init {
@@ -41,31 +41,37 @@ class LangAdapter constructor(mList: ArrayList<Models.lang>?) : RecyclerView.Ada
         val lang_data = mList?.get(position)
         holder?.mag_name?.text = lang_data?.name
         val letter = lang_data?.name?.get(0).toString()
-        val drawable = TextDrawable.builder().buildRound(letter, generator.randomColor)
+        val drawable = generator?.randomColor?.let { TextDrawable.builder().buildRound(letter, it) }
         holder?.mag_thumbnail?.setImageDrawable(drawable)
 
         holder?.lang_item?.setOnClickListener {
 
-            var bookList: ArrayList<Models.book>? = ArrayList()
-            var database: FirebaseDatabase = FirebaseDatabase.getInstance()
-            var myRef: DatabaseReference = database.getReference(lang_data?.name)
+            val bookList: ArrayList<Models.book>? = ArrayList()
+            val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+            val myRef: DatabaseReference = database.getReference(lang_data?.name)
 
             myRef.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {
-                    Toast.makeText(app_context, "An unexpected error occurred", Toast.LENGTH_LONG).show()
+                    Toast.makeText(app_context, "There seems to be a Network Connectivity Issue as a connection could not be established to the Akekọ Server", Toast.LENGTH_LONG).show()
                 }
 
                 override fun onDataChange(p0: DataSnapshot?) {
                     bookList?.clear()
                     p0?.children?.forEach { noteSnapshot ->
                         val note = noteSnapshot.getValue(Models.book::class.java)
-                        bookList?.add(note!!)
+                        if (note != null) {
+                            bookList?.add(note)
+                        }
                     }
-
-                    if (bookList?.count()!! > 0) {
-                        var intent = Intent(app_context as Menu, Material::class.java)
-                        intent.putExtra("lang_name", lang_data?.name)
-                        app_context?.startActivity(intent)
+                    val count = bookList?.count()
+                    if (count != null) {
+                        if (count > 0) {
+                            val intent = Intent(app_context as Menu, Material::class.java)
+                            intent.putExtra("lang_name", lang_data?.name)
+                            app_context?.startActivity(intent)
+                        } else {
+                            Toast.makeText(app_context, "No Materials for ${lang_data?.name} Available Yet", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         Toast.makeText(app_context, "No Materials for ${lang_data?.name} Available Yet", Toast.LENGTH_SHORT).show()
                     }
@@ -85,6 +91,6 @@ class LangAdapter constructor(mList: ArrayList<Models.lang>?) : RecyclerView.Ada
         var mag_name = layoutView.findViewById<TextView>(R.id.lang_name)!!
         var mag_thumbnail = layoutView.findViewById<ImageView>(R.id.lang_image)!!
 
-        var lang_item = layoutView.findViewById<RelativeLayout>(R.id.lang_list)
+        var lang_item: RelativeLayout = layoutView.findViewById<RelativeLayout>(R.id.lang_list)
     }
 }

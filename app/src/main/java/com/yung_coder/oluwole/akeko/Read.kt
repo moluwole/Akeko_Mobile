@@ -89,14 +89,8 @@ class Read : AppCompatActivity() {
 
         progressBar = findViewById(R.id.progressBar2)
 
-        val cal = Calendar.getInstance()
-        cal.timeInMillis = System.currentTimeMillis()
-        cal.set(Calendar.HOUR, 2)
-        cal.set(Calendar.MINUTE, 0)
-
-
-        val hrs = cal.timeInMillis
-        val myCountDownTimer = MyCountDownTimer(hrs, 1000)
+        val myCountDownTimer = MyCountDownTimer(7200000, 1000)
+        progressBar?.max = (7200000 / 1000)
         myCountDownTimer.start()
     }
 
@@ -106,11 +100,12 @@ class Read : AppCompatActivity() {
 
         override fun onTick(millisUntilFinished: Long) {
             val progress = (millisUntilFinished / 1000).toInt()
-            progressBar?.progress = progressBar?.max!! - progress
+            progressBar?.progress = progressBar?.max?.minus(progress) as Int
         }
 
         override fun onFinish() {
-            finish()
+            Toast.makeText(this@Read, "WAY TO GO!!! Done for the Day", Toast.LENGTH_SHORT).show()
+//            finish()
         }
     }
 
@@ -139,7 +134,7 @@ class Read : AppCompatActivity() {
                     mFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         renderer = PdfRenderer(mFileDescriptor)
-                        page = renderer!!.pageCount
+                        page = renderer?.pageCount as Int
                     } else {
                         var intent = Intent(Intent.ACTION_VIEW)
                         intent.setDataAndType(Uri.fromFile(file), "application/pdf")
@@ -182,7 +177,7 @@ class Read : AppCompatActivity() {
                     val REQ_HEIGHT = pdf_page?.height
 
                     val matrix = imageView?.imageMatrix
-                    val rect = Rect(0, 0, REQ_WIDTH!!, REQ_HEIGHT!!)
+                    val rect = Rect(0, 0, REQ_WIDTH as Int, REQ_HEIGHT as Int)
 //                    var bitmap: Bitmap = Bitmap()
                     val bitmap = Bitmap.createBitmap(REQ_WIDTH, REQ_HEIGHT, Bitmap.Config.ARGB_8888)
                     pdf_page.render(bitmap, rect, matrix, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
@@ -190,6 +185,11 @@ class Read : AppCompatActivity() {
                     imageView?.setImageBitmap(bitmap)
                     progressDialog.dismiss()
                     pdf_page.close()
+                } else {
+                    var intent = Intent(Intent.ACTION_VIEW)
+                    intent.setDataAndType(Uri.fromFile(file), "application/pdf")
+                    intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+                    context?.startActivity(intent)
                 }
             } else {
                 progressDialog.dismiss()

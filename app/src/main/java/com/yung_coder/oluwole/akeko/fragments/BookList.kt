@@ -98,7 +98,7 @@ class BookList : Fragment() {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {
                 showProgress(false)
-                Toast.makeText(rootView.context, "An unexpected error occurred", Toast.LENGTH_LONG).show()
+                Toast.makeText(rootView?.context, "There seems to be a Network Connectivity Issue as a connection could not be established to the Akekọ Server", Toast.LENGTH_LONG).show()
             }
 
             override fun onDataChange(p0: DataSnapshot?) {
@@ -112,13 +112,17 @@ class BookList : Fragment() {
                 }
 
                 showProgress(false)
-                
-                if (mList?.count()!! > 0) {
-                    val mLayoutManager = LinearLayoutManager(rootView.context)
-                    recycler_view?.layoutManager = mLayoutManager
+                val count = mList?.count()
+                if (count != null) {
+                    if (count > 0) {
+                        val mLayoutManager = LinearLayoutManager(rootView.context)
+                        recycler_view?.layoutManager = mLayoutManager
 
-                    val mAdapter = BookAdapter(mList, rootView.context, lang_name!!)
-                    recycler_view?.adapter = mAdapter
+                        val mAdapter = lang_name?.let { BookAdapter(mList, rootView.context, it) }
+                        recycler_view?.adapter = mAdapter
+                    } else {
+                        Toast.makeText(rootView.context, "No Books Available for $lang_name Yet", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     Toast.makeText(rootView.context, "No Books Available for $lang_name Yet", Toast.LENGTH_SHORT).show()
                 }

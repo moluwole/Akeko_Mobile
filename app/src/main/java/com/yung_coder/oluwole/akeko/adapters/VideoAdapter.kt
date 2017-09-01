@@ -26,7 +26,7 @@ import java.io.File
 class VideoAdapter constructor(mList: ArrayList<Models.video>?, context: Context, lang_name: String) : RecyclerView.Adapter<VideoAdapter.VideoViewAdapter>() {
 
     var mList: List<Models.video>? = null
-    var generator = ColorGenerator.MATERIAL
+    var generator: ColorGenerator? = ColorGenerator.MATERIAL
     var context: Context? = null
     var lang_name = ""
 
@@ -44,9 +44,9 @@ class VideoAdapter constructor(mList: ArrayList<Models.video>?, context: Context
         val video_details = mList?.get(position)
         holder?.video_name?.text = video_details?.title
         val letter = video_details?.title?.get(0).toString()
-        val drawable = TextDrawable.builder().buildRound(letter, generator.randomColor)
+        val drawable = generator?.randomColor?.let { TextDrawable.builder().buildRound(letter, it) }
         holder?.video_thumbnail?.setImageDrawable(drawable)
-        holder?.video_copyright?.text = "Source: " + video_details?.copyright
+        holder?.video_copyright?.text = context?.getString(R.string.source, video_details?.copyright)
 
         var vid_path = ""
         val storageDir = File(
@@ -68,7 +68,7 @@ class VideoAdapter constructor(mList: ArrayList<Models.video>?, context: Context
         }
 
         holder?.video_name?.setOnClickListener {
-            var intent: Intent = Intent(context, Play::class.java)
+            val intent: Intent = Intent(context, Play::class.java)
             intent.putExtra("video_path", vid_path)
             context?.startActivity(intent)
         }
@@ -76,20 +76,20 @@ class VideoAdapter constructor(mList: ArrayList<Models.video>?, context: Context
 
     fun download(name: String?, dirPath: String, progressbar: ProgressBar, downloadImage: ImageView) {
         val cloudinary_link = "http://res.cloudinary.com/dj4hinyoa/video/upload/v1502564722/$name.mp4"
-        val fetch = Fetch.newInstance(context!!)
-        var request = Request(cloudinary_link, dirPath, "$name.pdf")
-        var downloadId = fetch.enqueue(request)
+        val fetch = context?.let { Fetch.newInstance(it) }
+        val request = Request(cloudinary_link, dirPath, "$name.pdf")
+        val downloadId = fetch?.enqueue(request)
 
         progressbar.visibility = View.VISIBLE
         downloadImage.visibility = View.GONE
 
-        fetch.addFetchListener { id, status, progress, _, _, error ->
+        fetch?.addFetchListener { id, status, progress, _, _, error ->
             progressbar.visibility = View.VISIBLE
             if (downloadId == id && status == Fetch.STATUS_DOWNLOADING) {
                 progressbar.progress = progress
             } else if (error != Fetch.NO_ERROR) {
                 downloadImage.visibility = View.VISIBLE
-                Toast.makeText(context, "An error occurred during download", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "There seems to be a Network Connectivity Issue as an error occurred during download", Toast.LENGTH_SHORT).show()
             }
             if (status == Fetch.STATUS_DONE && error == Fetch.NO_ERROR) {
                 Toast.makeText(context, "Download success", Toast.LENGTH_SHORT).show()
@@ -110,10 +110,10 @@ class VideoAdapter constructor(mList: ArrayList<Models.video>?, context: Context
     }
 
     class VideoViewAdapter(layoutView: View) : RecyclerView.ViewHolder(layoutView) {
-        var video_name = layoutView.findViewById<TextView>(R.id.item_name)!!
-        var video_thumbnail = layoutView.findViewById<ImageView>(R.id.item_image)!!
-        var video_copyright = layoutView.findViewById<TextView>(R.id.item_source)!!
-        var video_download = layoutView.findViewById<ImageView>(R.id.item_download)!!
-        var video_progress = layoutView.findViewById<ProgressBar>(R.id.item_progressBar)!!
+        var video_name: TextView = layoutView.findViewById<TextView>(R.id.item_name)
+        var video_thumbnail: ImageView = layoutView.findViewById<ImageView>(R.id.item_image)
+        var video_copyright: TextView = layoutView.findViewById<TextView>(R.id.item_source)
+        var video_download: ImageView = layoutView.findViewById<ImageView>(R.id.item_download)
+        var video_progress: ProgressBar = layoutView.findViewById<ProgressBar>(R.id.item_progressBar)
     }
 }

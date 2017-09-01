@@ -46,18 +46,23 @@ class BookAdapter constructor(mList: ArrayList<Models.book>?, context: Context, 
         val letter = book_details?.title?.get(0).toString()
         val drawable = TextDrawable.builder().buildRound(letter, generator.randomColor)
         holder?.book_thumbnail?.setImageDrawable(drawable)
-        holder?.book_copyright?.text = "Source: " + book_details?.copyright
+        holder?.book_copyright?.text = context?.getString(R.string.source, book_details?.copyright)
 
 
         val storageDir = File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Akekoo/Books/" + lang_name)
         if (!storageDir.exists()) storageDir.mkdirs()
-        val filename = book_details?.title + ".pdf"
-        val file = File(storageDir.toString() + "/" + filename)
+        val filename = "${book_details?.title}.pdf"
+        val file = File("$storageDir/$filename")
         if (!file.exists()) {
             holder?.book_download?.visibility = View.VISIBLE
         } else {
-            holder?.book_download?.visibility = View.GONE
+            if (file.length() > 0) {
+                holder?.book_download?.visibility = View.GONE
+            } else {
+                file.delete()
+                holder?.book_download?.visibility = View.VISIBLE
+            }
         }
 
         holder?.book_download?.setOnClickListener {
@@ -65,7 +70,7 @@ class BookAdapter constructor(mList: ArrayList<Models.book>?, context: Context, 
         }
 
         holder?.book_name?.setOnClickListener {
-            var intent: Intent = Intent(context, Read::class.java)
+            val intent: Intent = Intent(context, Read::class.java)
             intent.putExtra("lang_name", lang_name)
             intent.putExtra("book_name", book_details?.title)
             intent.putExtra("page_num", book_details?.page_num)
@@ -75,25 +80,31 @@ class BookAdapter constructor(mList: ArrayList<Models.book>?, context: Context, 
 
     fun download(name: String?, dirPath: String, progressbar: ProgressBar, downloadImage: ImageView) {
         val cloudinary_link = "http://res.cloudinary.com/dj4hinyoa/image/upload/w_500,h_250,c_fill/v1502564722/$name.pdf"
-        val fetch = Fetch.newInstance(context!!)
-        var request = Request(cloudinary_link, dirPath, "$name.pdf")
-        var downloadId = fetch.enqueue(request)
+        val fetch = context?.let { Fetch.newInstance(it) }
+        val request = Request(cloudinary_link, dirPath, "$name.pdf")
+        val downloadId = fetch?.enqueue(request)
 
+        val file = File("$dirPath/$name.pdf")
         progressbar.visibility = View.VISIBLE
         downloadImage.visibility = View.GONE
 
-        fetch.addFetchListener { id, status, progress, _, _, error ->
+        fetch?.addFetchListener { id, status, progress, _, _, error ->
             progressbar.visibility = View.VISIBLE
             if (downloadId == id && status == Fetch.STATUS_DOWNLOADING) {
                 progressbar.progress = progress
             } else if (error != Fetch.NO_ERROR) {
                 downloadImage.visibility = View.VISIBLE
-                Toast.makeText(context, "An error occurred during download", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "There seems to be a Network Connectivity Issue as an error occurred during download", Toast.LENGTH_SHORT).show()
             }
             if (status == Fetch.STATUS_DONE && error == Fetch.NO_ERROR) {
-                Toast.makeText(context, "Download success", Toast.LENGTH_SHORT).show()
-                progressbar.visibility = View.GONE
-                downloadImage.visibility = View.GONE
+                if (file.exists() && file.length() > 0) {
+                    Toast.makeText(context, "Download success", Toast.LENGTH_SHORT).show()
+                    progressbar.visibility = View.GONE
+                    downloadImage.visibility = View.GONE
+                } else {
+                    progressbar.visibility = View.GONE
+                    downloadImage.visibility = View.VISIBLE
+                }
             } else {
                 progressbar.visibility = View.GONE
                 downloadImage.visibility = View.VISIBLE
@@ -109,11 +120,10 @@ class BookAdapter constructor(mList: ArrayList<Models.book>?, context: Context, 
     }
 
     class BookViewAdapter(layoutView: View) : RecyclerView.ViewHolder(layoutView) {
-        var book_name = layoutView.findViewById<TextView>(R.id.item_name)!!
-        var book_thumbnail = layoutView.findViewById<ImageView>(R.id.item_image)!!
-        var book_copyright = layoutView.findViewById<TextView>(R.id.item_source)!!
-        var book_download = layoutView.findViewById<ImageView>(R.id.item_download)!!
-        var book_progress = layoutView.findViewById<ProgressBar>(R.id.item_progressBar)!!
-//        var click_item = layoutView.findViewById<RelativeLayout>(R.id.lang_list)!!
+        var book_name = layoutView.findViewById<TextView>(R.id.item_name)
+        var book_thumbnail = layoutView.findViewById<ImageView>(R.id.item_image)
+        var book_copyright = layoutView.findViewById<TextView>(R.id.item_source)
+        var book_download = layoutView.findViewById<ImageView>(R.id.item_download)
+        var book_progress = layoutView.findViewById<ProgressBar>(R.id.item_progressBar)
     }
 }

@@ -12,6 +12,9 @@ import com.danielstone.materialaboutlibrary.model.MaterialAboutList
 
 class About : MaterialAboutActivity() {
     override fun getMaterialAboutList(p0: Context): MaterialAboutList {
+
+        val versionName = BuildConfig.VERSION_NAME
+
         var appCardBuilder = MaterialAboutCard.Builder()
 
         appCardBuilder.addItem(MaterialAboutTitleItem.Builder()
@@ -22,7 +25,7 @@ class About : MaterialAboutActivity() {
 
         appCardBuilder.addItem(MaterialAboutActionItem.Builder()
                 .text("Version")
-                .subText("1.0.0")
+                .subText(versionName)
                 .icon(R.drawable.ic_info_outline_24dp)
                 .build())
 

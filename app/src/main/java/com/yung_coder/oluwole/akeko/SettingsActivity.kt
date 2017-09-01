@@ -5,7 +5,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.preference.*
+import android.preference.CheckBoxPreference
+import android.preference.ListPreference
+import android.preference.Preference
+import android.preference.PreferenceActivity
 import android.view.MenuItem
 import android.widget.Toast
 import java.util.*
@@ -63,16 +66,14 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
     fun setAlarm(interval: String) {
         val cal = Calendar.getInstance()
-        cal.timeInMillis = System.currentTimeMillis()
         cal.set(Calendar.HOUR_OF_DAY, 8)
         cal.set(Calendar.MINUTE, 30)
-//        cal.add(Calendar.SECOND, time_duration(interval).toInt())
 
         var alarmMgr: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(applicationContext, AlarmReceiver::class.java)
         val alarmIntent = PendingIntent.getActivity(applicationContext, ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT)
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, time_duration(interval) * 1000, alarmIntent)
-        Toast.makeText(applicationContext, "Alarm Set to $interval", Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, "Alarm Set to $interval starting from 8:30 AM every day", Toast.LENGTH_SHORT).show()
     }
 
     fun deleteAlarm() {
@@ -101,7 +102,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     private fun setupActionBar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addPreferencesFromResource(R.xml.pref_settings)
-        PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
+//        PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
